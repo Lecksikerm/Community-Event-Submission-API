@@ -206,7 +206,10 @@
     </footer>
 
     <script>
-        const baseUrl = 'http://localhost:5000/api/events';
+        const baseUrl = window.location.hostname === 'localhost'
+            ? 'http://localhost:5000/api/events'
+            : 'https://community-event-submission-api.onrender.com/api/events';
+
         let currentPage = 1;
         const limit = 6;
         let editId = null;

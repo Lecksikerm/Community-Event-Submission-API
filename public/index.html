@@ -3,65 +3,196 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community Events</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #eef2f3, #dfe9f3);
+            margin: 0;
+            padding: 2rem;
+            color: #333;
+            transition: background 0.3s, color 0.3s;
         }
 
-        h1,
-        h2 {
-            color: #333;
+        body.dark {
+            background: #121212;
+            color: #e0e0e0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        body.dark h1 {
+            color: #ffffff;
         }
 
         form {
-            margin-bottom: 20px;
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark form {
+            background: #1e1e1e;
+            color: #e0e0e0;
         }
 
         input,
         button {
-            padding: 8px;
-            margin: 5px 0;
-            width: 200px;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        li {
-            margin-bottom: 10px;
-            padding: 10px;
+            padding: 12px;
+            border-radius: 8px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            font-size: 1rem;
+            transition: background 0.3s, color 0.3s, border 0.3s;
+        }
+
+        body.dark input {
+            background: #2a2a2a;
+            color: #e0e0e0;
+            border: 1px solid #555;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        #eventsContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .event-card {
+            background: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            border-left: 6px solid #3498db;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.3s, color 0.3s;
+        }
+
+        body.dark .event-card {
+            background: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .event-card h3 {
+            margin-top: 0;
+            color: #2980b9;
+        }
+
+        body.dark .event-card h3 {
+            color: #58a6ff;
+        }
+
+        .event-actions {
+            margin-top: 10px;
+        }
+
+        .event-actions button {
+            background: #e74c3c;
+            margin-right: 10px;
+        }
+
+        .event-actions button:hover {
+            background: #c0392b;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 2rem;
         }
 
         .pagination button {
-            margin-right: 5px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: #3498db;
+            color: white;
+            margin: 0 5px;
+            cursor: pointer;
         }
 
-        .action-btn {
-            margin-left: 10px;
+        .pagination button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        footer {
+            margin-top: 40px;
+            background: #0d253f;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        footer .sub {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        #darkModeToggle {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
         }
     </style>
 </head>
 
 <body>
-
+    <button id="darkModeToggle">🌙 Dark Mode</button>
     <h1>Community Events</h1>
 
-    <h2 id="formTitle">Add New Event</h2>
     <form id="eventForm">
-        <input type="text" id="name" placeholder="Event Name" required /><br />
-        <input type="date" id="date" placeholder="Event Date" required /><br />
-        <input type="text" id="location" placeholder="Location" required /><br />
+        <input type="text" id="name" placeholder="Event Name" required />
+        <input type="date" id="date" required />
+        <input type="text" id="location" placeholder="Location" required />
         <button type="submit">Submit</button>
     </form>
 
-    <h2>Event List</h2>
-    <ul id="eventList"></ul>
+    <div id="eventsContainer"></div>
 
     <div class="pagination">
         <button id="prevPage">Previous</button>
@@ -69,35 +200,53 @@
         <button id="nextPage">Next</button>
     </div>
 
+    <footer>
+        <p>© <span id="year"></span> Community Events Platform</p>
+        <p class="sub">Built with ❤️ using Node.js, Express & MongoDB</p>
+    </footer>
+
     <script>
         const baseUrl = 'http://localhost:5000/api/events';
         let currentPage = 1;
-        const limit = 10;
+        const limit = 6;
         let editId = null;
 
-        const eventList = document.getElementById('eventList');
+        const eventsContainer = document.getElementById('eventsContainer');
         const currentPageSpan = document.getElementById('currentPage');
         const prevPageBtn = document.getElementById('prevPage');
         const nextPageBtn = document.getElementById('nextPage');
         const form = document.getElementById('eventForm');
-        const formTitle = document.getElementById('formTitle');
         const submitBtn = form.querySelector('button');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            darkModeToggle.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+        });
 
         async function fetchEvents(page = 1) {
             const res = await fetch(`${baseUrl}?page=${page}&limit=${limit}`);
             const data = await res.json();
-            eventList.innerHTML = '';
-            data.events.forEach(event => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-        <strong>${event.name}</strong><br/>
-        Date: ${new Date(event.date).toLocaleDateString()}<br/>
-        Location: ${event.location}
-        <button class="action-btn" onclick="editEvent('${event._id}')">Edit</button>
-        <button class="action-btn" onclick="deleteEvent('${event._id}')">Delete</button>
-      `;
-                eventList.appendChild(li);
-            });
+            eventsContainer.innerHTML = '';
+            if (data.events.length === 0) {
+                eventsContainer.innerHTML = '<p class="empty">No events found.</p>';
+            } else {
+                data.events.forEach(event => {
+                    const card = document.createElement('div');
+                    card.className = 'event-card';
+                    card.innerHTML = `
+            <h3>${event.name}</h3>
+            <p>📅 ${new Date(event.date).toLocaleDateString()}</p>
+            <p>📍 ${event.location}</p>
+            <div class="event-actions">
+              <button onclick="editEvent('${event._id}')">Edit</button>
+              <button onclick="deleteEvent('${event._id}')">Delete</button>
+            </div>
+          `;
+                    eventsContainer.appendChild(card);
+                });
+            }
+
             currentPage = data.page;
             currentPageSpan.textContent = currentPage;
             prevPageBtn.disabled = currentPage === 1;
@@ -113,7 +262,6 @@
             };
 
             if (editId) {
-
                 const res = await fetch(`${baseUrl}/${editId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -127,7 +275,6 @@
                     alert(error.message || 'Failed to update event');
                 }
             } else {
-
                 const res = await fetch(baseUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -150,7 +297,6 @@
             document.getElementById('date').value = event.date.split('T')[0];
             document.getElementById('location').value = event.location;
             editId = id;
-            formTitle.textContent = 'Edit Event';
             submitBtn.textContent = 'Update';
         }
 
@@ -164,7 +310,6 @@
         function resetForm() {
             form.reset();
             editId = null;
-            formTitle.textContent = 'Add New Event';
             submitBtn.textContent = 'Submit';
         }
 
@@ -176,9 +321,10 @@
             fetchEvents(currentPage + 1);
         });
 
+        document.getElementById('year').textContent = new Date().getFullYear();
+
         fetchEvents();
     </script>
-
 </body>
 
 </html>
